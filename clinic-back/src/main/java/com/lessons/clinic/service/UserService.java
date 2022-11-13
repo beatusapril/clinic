@@ -3,27 +3,38 @@ package com.lessons.clinic.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import com.lessons.clinic.domain.auth.User;
+import com.lessons.clinic.dao.UserDao;
+import com.lessons.clinic.domain.auth.UserDto;
+import com.lessons.clinic.entities.User;
+import com.lessons.clinic.utils.HibernateUtil;
 
 @Service
 public class UserService {
 	
-	private final List<User> users;
+	@PersistenceContext
+    private EntityManager em;
+	private final UserDao userDao;
+	
+	public Session getSession() {
+	    Session session = em.unwrap(Session.class);
+	    return session;
+	  }
 
-    public UserService() {
-        this.users = List.of(
-                new User("anton", "1234", "Антон", "Иванов"),
-                new User("ivan", "12345", "Сергей", "Петров")
-        );
+    public UserService(UserDao userDao) {
+    	this.userDao = userDao;
     }
 
-    public Optional<User> getByLogin(@NonNull String login) {
-        return users.stream()
-                .filter(user -> login.equals(user.getLogin()))
-                .findFirst();
+    public Optional<UserDto> getByLogin(@NonNull String login) {
+    	Optional<User> user = userDao.getByLogin(login);
+    	return user.isPresent() ? Optional.ofNullable(user.get().fromEntity()) : Optional.empty();
     }
 
 }

@@ -1,5 +1,6 @@
 CREATE TYPE ROLE AS ENUM ('ADMIN', 'USER');
 CREATE TYPE SEX AS ENUM ('MALE', 'FEMALE');
+CREATE TYPE STATUS_SLOT AS ENUM ('FREE', 'BUSY');
 
 CREATE TABLE public.users (
   id bigserial not null PRIMARY KEY,
@@ -64,6 +65,7 @@ CREATE TABLE public.applications (
 CREATE TABLE public.slots(
      id bigserial NOT NULL PRIMARY KEY,
      date_services TIMESTAMP NOT NULL,
+     status STATUS_SLOT,
      service_id BIGINT NOT NULL REFERENCES public.services(id),
      schedule_id BIGINT NOT NULL REFERENCES public.schedules(id)
 );

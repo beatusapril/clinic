@@ -1,12 +1,14 @@
 package com.lessons.clinic.domain.auth;
 
-public class User {
+import com.lessons.clinic.entities.User;
+
+public class UserDto {
 	private String login;
 	private String password;
 	private String firstName;
 	private String lastName;
 
-	public User(String login, String password, String firstName, String lastName) {
+	public UserDto(String login, String password, String firstName, String lastName) {
 		super();
 		this.login = login;
 		this.password = password;
@@ -14,7 +16,7 @@ public class User {
 		this.lastName = lastName;
 	}
 
-	public User() {
+	public UserDto() {
 		super();
 	}
 
@@ -48,5 +50,14 @@ public class User {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	
+	public UserDto fromEntity(User user) {
+		UserDto userDto = new UserDto();
+		userDto.setLogin(user.getLogin());
+		userDto.setPassword(user.getPassword());
+		userDto.setFirstName(user.getFirstName());
+		userDto.setLastName(user.getLastName());
+		return userDto;
 	}
 }

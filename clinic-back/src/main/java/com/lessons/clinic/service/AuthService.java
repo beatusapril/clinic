@@ -13,7 +13,7 @@ import com.lessons.clinic.components.JwtProvider;
 import com.lessons.clinic.domain.auth.JwtAuthentication;
 import com.lessons.clinic.domain.auth.LoginRequest;
 import com.lessons.clinic.domain.auth.LoginResponse;
-import com.lessons.clinic.domain.auth.User;
+import com.lessons.clinic.domain.auth.UserDto;
 
 import io.jsonwebtoken.Claims;
 
@@ -33,7 +33,7 @@ public class AuthService {
 	}
 
 	public LoginResponse login(@NonNull LoginRequest authRequest) throws AuthException {
-        final User user = userService.getByLogin(authRequest.getLogin())
+        final UserDto user = userService.getByLogin(authRequest.getLogin())
                 .orElseThrow(() -> new AuthException("Пользователь не найден"));
         if (user.getPassword().equals(authRequest.getPassword())) {
             final String accessToken = jwtProvider.generateAccessToken(user);
@@ -51,7 +51,7 @@ public class AuthService {
             final String login = claims.getSubject();
             final String saveRefreshToken = refreshStorage.get(login);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final User user = userService.getByLogin(login)
+                final UserDto user = userService.getByLogin(login)
                         .orElseThrow(() -> new AuthException("Пользователь не найден"));
                 final String accessToken = jwtProvider.generateAccessToken(user);
                 return new LoginResponse(accessToken, null);
@@ -66,7 +66,7 @@ public class AuthService {
             final String login = claims.getSubject();
             final String saveRefreshToken = refreshStorage.get(login);
             if (saveRefreshToken != null && saveRefreshToken.equals(refreshToken)) {
-                final User user = userService.getByLogin(login)
+                final UserDto user = userService.getByLogin(login)
                         .orElseThrow(() -> new AuthException("Пользователь не найден"));
                 final String accessToken = jwtProvider.generateAccessToken(user);
                 final String newRefreshToken = jwtProvider.generateRefreshToken(user);
